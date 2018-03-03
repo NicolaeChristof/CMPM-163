@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <title>Homework 3 Part B</title>
+        <meta charset="utf-8">
+        <style>
+            body { margin: 0; }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- Loading external libraries -->
+        <script src="js/three.js"></script>
+        <script src="js/cmgine.js"></script>
+        <!-- <script src="./js/dat.gui.min.js"></script> -->
+
+        <!-- Loading external shaders -->
+        <script src="js/sdf-shader.js"></script>
+
+        <script>
+            // 0. Create a renderer
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            var options = {
+                Ball_Speed: 1.7,
+                Hole_Speed: 1.7
+            };
+
+            // var gui = new dat.GUI( { width: 350 } );
+            // gui.add( options, "Ball_Speed", 0, 3 );
+            // gui.add( options, "Hole_Speed", 0, 3 );
+
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+
+            // 1. Create a Scene
+            var scene = new THREE.Scene();
+
+            // 1.1 Create a camera
+            var camera = new THREE.OrthographicCamera(width/-2.0, width/2.0, height/2.0, height/-2.0, 1, 1000);
+
+            var geometry = new THREE.PlaneGeometry(width,height);
+
+            var shaderInput = {
+                resolution: {type: "f", value: new THREE.Vector2(width, height)},
+                time: { type: "f", value: 0.0 },
+                Ball_Speed: { type: "f", value: options.Ball_Speed },
+                Hole_Speed: { type: "f", value: options.Hole_Speed }
+            };
+
+            var material = new THREE.ShaderMaterial({
+                uniforms: shaderInput,
+                vertexShader: sphereDFVShader,
+                fragmentShader: sphereDFFShader
+            });
+
+            var mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            CMENGINE.Start(scene, renderer, camera);
+            CMENGINE.Update();
+
+        </script>
+    </body>
+</html>
